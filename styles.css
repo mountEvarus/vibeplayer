@@ -11,32 +11,19 @@ body {
 .audioPlayer {
   box-shadow: 0 0 32px 4px rgba(0, 0, 0, 0.2);
   font-family: "Source Sans Pro", sans-serif;
-  width: 1000px;
+  width: 85%;
+  height: 80vh;
   display: flex;
+  padding: 10px;
 }
-.audioPlayer canvas {
-  flex: 2;
-  width: 100vw;
-  background-color: black;
-}
-.audioPlayer .playlist {
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.6) 0%, rgba(55, 55, 55, 0.6) 64%), url("img/beige-paper.png");
+.audioPlayer section {
+  padding: 20px;
+  width: 15%;
   display: flex;
   flex-direction: column;
 }
-.audioPlayer .playlist a {
-  padding: 0.75rem 2.5rem;
-  display: flex;
-  align-items: center;
+.audioPlayer canvas {
+  flex: 2;
   width: 100%;
-  color: #fff;
-  text-decoration: none;
-}
-.audioPlayer .playlist a i {
-  font-size: 0.75rem;
-  margin-right: 0.5rem;
-}
-.audioPlayer .playlist a:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: black;
 }
