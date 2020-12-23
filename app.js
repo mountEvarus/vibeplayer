@@ -3,7 +3,8 @@ const musicObjArr = [
     { url: "./assets/songs/i_kill_for_fun.mp3", name: "I Kill For Fun"},
     { url: "./assets/songs/crawl.flac", name: "Crawl"},
     { url: "./assets/songs/crack_rock.mp3", name: "Crack Rock"},
-    { url: "./assets/songs/chapter_6.mp3", name: "Chapter Six"}
+    { url: "./assets/songs/chapter_6.mp3", name: "Chapter Six"},
+    { url: "./assets/songs/my_only_one.flac", name: "My Only One"}
 ];
 const optionsArr = [
     {type: "colorOption", name: "Default"},
@@ -122,7 +123,7 @@ const createVisualiser = () => {
                     ctx.fillStyle = `white`;
                     break;
                 case "Monochrome":
-                    ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
+                    ctx.fillStyle = `rgb(${color+80}, ${color+80}, ${color+80})`;
                     break;
                 default:
                     // Autumn
