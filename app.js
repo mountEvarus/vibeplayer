@@ -16,10 +16,17 @@ const optionsArr = [
     {type: "colorOption", name: "Blue Fade"},
     {type: "colorOption", name: "Solid White"},
     {type: "colorOption", name: "Monochrome"},
+
+    {type: "colorOption", name: "Autumn"},
+    {type: "colorOption", name: "Lilac"},
+    {type: "colorOption", name: "Rose Gold"},
+
     {type: "waveformOption", name:"Default"},
     {type: "waveformOption", name: "Circular"}
+    // DOTS/SINE WAVE
 ];
 
+let fftSize = 512;
 let colorConfig = null;
 let audioContext = null;
 const audioPlayer = document.querySelector(".audioPlayer");
@@ -38,12 +45,11 @@ const loadSongData = (element) => {
 // Loading in options:
 const loadWaveformColorOptions = (element1, element2) => {
     optionsArr.forEach(option => {
-        const newOption = document.createElement("p");
+        const newOption = document.createElement("option");
         newOption.innerHTML = option.name;
 
         if (option.type === "colorOption") {
             element1.appendChild(newOption);
-            newOption.classList.add("colorOption");
         } else if (option.type === "waveformOption") {
             element2.appendChild(newOption);
         }
@@ -63,12 +69,18 @@ const canvas = document.createElement("canvas");
 audioPlayer.appendChild(canvas);
 
 // Waveform Options:
-const colorOptions = document.createElement("article");
-const waveformOptions = document.createElement("article");
+const colorOptions = document.createElement("select");
+const colorOptionsLabel = document.createElement("label");
+colorOptionsLabel.innerHTML = "Pick a Theme!"
+const waveformOptions = document.createElement("select");
+const waveformOptionsLabel = document.createElement("label");
+waveformOptionsLabel.innerHTML = "Pick a Waveform Style (INACTIVE)"
 loadWaveformColorOptions(colorOptions, waveformOptions);
 
 const options = document.createElement("section");
+options.append(colorOptionsLabel);
 options.append(colorOptions);
+options.append(waveformOptionsLabel);
 options.append(waveformOptions);
 
 audioPlayer.appendChild(options);
@@ -82,8 +94,9 @@ const createVisualiser = () => {
     src.connect(analyser);
     analyser.connect(audioContext.destination);
 
-    // 2048, 1024, 512, 256 or 128? - make it a choice!
+    // 2048, 1024, 512, 256, 128, 64? - make it a choice!
     analyser.fftSize = 512;
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     const barWidth = (canvas.width / bufferLength) * 2.5;
@@ -125,14 +138,17 @@ const createVisualiser = () => {
                 case "Monochrome":
                     ctx.fillStyle = `rgb(${color+80}, ${color+80}, ${color+80})`;
                     break;
+                case "Autumn":
+                    ctx.fillStyle = `rgb(150, ${color}, 50)`;
+                    break;
+                case "Lilac":
+                    ctx.fillStyle = `rgb(150, ${color}, 150)`;
+                    break;
+                case "Rose Gold":
+                    ctx.fillStyle = `rgb(250, 150, ${color})`;
+                    break;
                 default:
                     ctx.fillStyle = `rgb(${color+30}, ${color+30}, 219)`;
-                    // Autumn
-                    // ctx.fillStyle = `rgb(150, ${color}, 50)`;
-                    // Lilac
-                    // ctx.fillStyle = `rgb(150, ${color}, 150)`;
-                    // Golden
-                    // ctx.fillStyle = `rgb(250, 150, ${color})`;
             }
 
 
@@ -166,10 +182,13 @@ loadedSongList.forEach(listItem => {
     });
 });
 
-// Changing color config:
-const colorOptionsArr = document.querySelectorAll(".colorOption");
-colorOptionsArr.forEach(option => {
-    option.addEventListener("click", (e) => {
-        colorConfig = option.innerHTML;
-    })
+// Changing colors:
+colorOptions.addEventListener("change", (e) => {
+    colorConfig = e.target.value;
 })
+
+
+// Music sorting
+// By normal tags (Artist,song name, etc)
+// Grouping (Like in musicBee)
+// By cover (analyse covers and sort by rbg scale)
