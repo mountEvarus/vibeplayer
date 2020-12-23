@@ -83,7 +83,7 @@ const createVisualiser = () => {
     analyser.connect(audioContext.destination);
 
     // 2048, 1024, 512, 256 or 128? - make it a choice!
-    analyser.fftSize = 2048;
+    analyser.fftSize = 512;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     const barWidth = (canvas.width / bufferLength) * 2.5;
@@ -108,16 +108,16 @@ const createVisualiser = () => {
                     ctx.fillStyle = `rgb(163, 240, ${color})`;
                     break;
                 case "Ice Blue":
-                    ctx.fillStyle = `rgb(${color+30}, ${color+30}, 219)`;
+                    ctx.fillStyle = `rgb(50, ${color+50}, 200)`;
                     break;
                 case "Red Fade":
-                    ctx.fillStyle = `rgb(${color}, 0, 0)`;
+                    ctx.fillStyle = `rgb(${color+30}, 30, 30)`;
                     break;
                 case "Green Fade":
-                    ctx.fillStyle = `rgb(0, ${color}, 0)`;
+                    ctx.fillStyle = `rgb(30, ${color+30}, 30)`;
                     break;
                 case "Blue Fade":
-                    ctx.fillStyle = `rgb(0, 0, ${color})`;
+                    ctx.fillStyle = `rgb(30, 30, ${color+30})`;
                     break;
                 case "Solid White":
                     ctx.fillStyle = `white`;
@@ -126,11 +126,11 @@ const createVisualiser = () => {
                     ctx.fillStyle = `rgb(${color+80}, ${color+80}, ${color+80})`;
                     break;
                 default:
+                    ctx.fillStyle = `rgb(${color+30}, ${color+30}, 219)`;
                     // Autumn
                     // ctx.fillStyle = `rgb(150, ${color}, 50)`;
                     // Lilac
                     // ctx.fillStyle = `rgb(150, ${color}, 150)`;
-                    ctx.fillStyle = `rgb(50, ${color+50}, 200)`;
                     // Golden
                     // ctx.fillStyle = `rgb(250, 150, ${color})`;
             }
