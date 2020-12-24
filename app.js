@@ -1,10 +1,13 @@
 const musicObjArr = [
     { url: "./assets/songs/back_n_forth.mp3", name: "Back 'n Forth"},
-    { url: "./assets/songs/i_kill_for_fun.mp3", name: "I Kill For Fun"},
-    { url: "./assets/songs/crawl.flac", name: "Crawl"},
+    { url: "./assets/songs/hurricane.mp3", name: "Hurricane"},
+    { url: "./assets/songs/fake_pods.mp3", name: "Fake Pods"},
     { url: "./assets/songs/crack_rock.mp3", name: "Crack Rock"},
     { url: "./assets/songs/chapter_6.mp3", name: "Chapter Six"},
-    { url: "./assets/songs/my_only_one.flac", name: "My Only One"}
+    { url: "./assets/songs/my_only_one.flac", name: "My Only One"},
+    { url: "./assets/songs/blessings.mp3", name: "Blessings"},
+    { url: "./assets/songs/feel_the_love.flac", name: "Feel The Love"},
+    { url: "./assets/songs/ziploc.mp3", name: "ZIPLOC"},
 ];
 const optionsArr = [
     {type: "colorOption", name: "Default"},
@@ -16,18 +19,17 @@ const optionsArr = [
     {type: "colorOption", name: "Blue Fade"},
     {type: "colorOption", name: "Solid White"},
     {type: "colorOption", name: "Monochrome"},
-
     {type: "colorOption", name: "Autumn"},
     {type: "colorOption", name: "Lilac"},
     {type: "colorOption", name: "Rose Gold"},
-
+    {type: "colorOption", name: "Rainbow"},
     {type: "waveformOption", name:"Default"},
     {type: "waveformOption", name: "Circular"}
     // DOTS/SINE WAVE
 ];
 
-let fftSize = 512;
 let colorConfig = null;
+let waveformConfig = null;
 let audioContext = null;
 const audioPlayer = document.querySelector(".audioPlayer");
 
@@ -74,7 +76,7 @@ const colorOptionsLabel = document.createElement("label");
 colorOptionsLabel.innerHTML = "Pick a Theme!"
 const waveformOptions = document.createElement("select");
 const waveformOptionsLabel = document.createElement("label");
-waveformOptionsLabel.innerHTML = "Pick a Waveform Style (INACTIVE)"
+waveformOptionsLabel.innerHTML = "Pick a Waveform"
 loadWaveformColorOptions(colorOptions, waveformOptions);
 
 const options = document.createElement("section");
@@ -82,7 +84,6 @@ options.append(colorOptionsLabel);
 options.append(colorOptions);
 options.append(waveformOptionsLabel);
 options.append(waveformOptions);
-
 audioPlayer.appendChild(options);
 
 // Visualizer:
@@ -91,70 +92,72 @@ const createVisualiser = () => {
     const src = audioContext.createMediaElementSource(audioElement);
     const analyser = audioContext.createAnalyser();
     const ctx = canvas.getContext("2d");
+    ctx.canvas.width  = 800;
+    ctx.canvas.height = 800;
     src.connect(analyser);
     analyser.connect(audioContext.destination);
 
-    // 2048, 1024, 512, 256, 128, 64? - make it a choice!
-    analyser.fftSize = 512;
+    // 1024, 512, 256, 128, 64, 32? - make it a choice!
+    analyser.fftSize = 1024;
 
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    const barWidth = (canvas.width / bufferLength) * 2.5;
+    const barWidth = (canvas.width / bufferLength);
     
     const renderFrame = () => {
+
+        ctx.fillStyle= "#000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        switch(waveformConfig) {
+            case "Circular": 
+                drawCircularVisualiser();
+                break;
+            default:
+                drawDefaultVisualiser();
+        }
+    }
+
+    const drawDefaultVisualiser = () => {
         requestAnimationFrame(renderFrame);
         let bar = 0;
         analyser.getByteFrequencyData(dataArray);
-        ctx.fillStyle= "#000";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+        
         for (let i = 0; i < bufferLength; i++) {
-            let barHeight = dataArray[i] - 125;
-            const color = barHeight + (25 * (i/bufferLength));
+            let barHeight = dataArray[i] * 3;
+            const color = dataArray[i] + (25 * (i/bufferLength));
 
-            // switch/case with colorConfig;
-            switch(colorConfig) {
-                case "Violent Red":
-                    ctx.fillStyle = `rgb(209, ${100-(color)}, ${100-(color)})`;
-                    break;
-                case "Jungle Green":
-                    ctx.fillStyle = `rgb(163, 240, ${color})`;
-                    break;
-                case "Ice Blue":
-                    ctx.fillStyle = `rgb(50, ${color+50}, 200)`;
-                    break;
-                case "Red Fade":
-                    ctx.fillStyle = `rgb(${color+30}, 30, 30)`;
-                    break;
-                case "Green Fade":
-                    ctx.fillStyle = `rgb(30, ${color+30}, 30)`;
-                    break;
-                case "Blue Fade":
-                    ctx.fillStyle = `rgb(30, 30, ${color+30})`;
-                    break;
-                case "Solid White":
-                    ctx.fillStyle = `white`;
-                    break;
-                case "Monochrome":
-                    ctx.fillStyle = `rgb(${color+80}, ${color+80}, ${color+80})`;
-                    break;
-                case "Autumn":
-                    ctx.fillStyle = `rgb(150, ${color}, 50)`;
-                    break;
-                case "Lilac":
-                    ctx.fillStyle = `rgb(150, ${color}, 150)`;
-                    break;
-                case "Rose Gold":
-                    ctx.fillStyle = `rgb(250, 150, ${color})`;
-                    break;
-                default:
-                    ctx.fillStyle = `rgb(${color+30}, ${color+30}, 219)`;
-            }
-
-
+            ctx.fillStyle = checkColorConfig(color);
             ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
-            bar += barWidth + 2;
+            bar += barWidth;
         }
+    }
+    const drawCircularVisualiser = () => {
+        let radius = 200;
+        // Draw circle
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0 , 2 * Math.PI);
+        ctx.stroke();
+        analyser.getByteFrequencyData(dataArray);
+        
+        for (var i = 0; i < bufferLength; i++) {
+            const radians = (Math.PI * 2) / bufferLength;
+            let bar_height = (dataArray[i] * 0.75);
+            if (bar_height < 0) bar_height = 0;
+    
+            const x = canvas.width / 2 + Math.cos(radians * i) * radius;
+            const y = canvas.height / 2 + Math.sin(radians * i) * radius;
+            const x_end = canvas.width / 2 + Math.cos(radians * i) * (radius + bar_height);
+            const y_end = canvas.height / 2 + Math.sin(radians * i) * (radius + bar_height);
+            const color = (dataArray[i]) + (25 * i/bufferLength);
+            ctx.strokeStyle = checkColorConfig(color);
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x_end, y_end);
+            ctx.stroke();
+        }
+        requestAnimationFrame(renderFrame);
     }
     renderFrame();
 }
@@ -165,10 +168,7 @@ loadedSongList.forEach(listItem => {
     listItem.addEventListener("click", (e) => {
         e.preventDefault();
 
-        if (!audioContext) {
-            createVisualiser();
-        }
-
+        if (!audioContext) createVisualiser();
         const isCurrentAudio = listItem.href == audioElement.src;
 
         if (!isCurrentAudio) {
@@ -182,13 +182,41 @@ loadedSongList.forEach(listItem => {
     });
 });
 
-// Changing colors:
+// Changing colors/waveforms:
 colorOptions.addEventListener("change", (e) => {
     colorConfig = e.target.value;
-})
+});
+waveformOptions.addEventListener("change", (e) => {
+    waveformConfig = e.target.value;
+});
 
-
-// Music sorting
-// By normal tags (Artist,song name, etc)
-// Grouping (Like in musicBee)
-// By cover (analyse covers and sort by rbg scale)
+const checkColorConfig = (color) => {
+    switch(colorConfig) {
+        case "Violent Red":
+            return `rgb(209, ${100-(color*0.5)}, ${100-(color*0.5)})`;
+        case "Jungle Green":
+            return `rgb(163, 240, ${color*0.5})`;
+        case "Ice Blue":
+            return `rgb(${color+30}, ${color+30}, 219)`;
+        case "Red Fade":
+            return `rgb(${color}, 0, 0)`;
+        case "Green Fade":
+            return `rgb(0, ${color}, 0)`;
+        case "Blue Fade":
+            return `rgb(0, 0, ${color})`;
+        case "Solid White":
+            return `white`;
+        case "Monochrome":
+            return `rgb(${color}, ${color}, ${color})`;
+        case "Autumn":
+            return `rgb(150, ${color}, 50)`;
+        case "Lilac":
+            return `rgb(150, ${color*0.5}, 150)`;
+        case "Rose Gold":
+            return `rgb(250, 150, ${color*0.5})`;
+        case "Rainbow":
+            return `hsl(${color*1.5}, 100%, 50%)`;
+        default:
+            return `rgb(50, ${color+50}, 200)`;
+    }
+}
