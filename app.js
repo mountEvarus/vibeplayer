@@ -23,8 +23,9 @@ const optionsArr = [
     {type: "colorOption", name: "Lilac"},
     {type: "colorOption", name: "Rose Gold"},
     {type: "colorOption", name: "Rainbow"},
-    {type: "waveformOption", name:"Default"},
-    {type: "waveformOption", name: "Circular"}
+    {type: "waveformOption", name:"Spectrum"},
+    {type: "waveformOption", name:"Static"},
+    {type: "waveformOption", name: "Eclipse"}
     // DOTS/SINE WAVE
 ];
 
@@ -58,6 +59,15 @@ const loadWaveformColorOptions = (element1, element2) => {
     });
 }
 
+// CURRENT VERSION NOTE:
+const currentVersion = document.createElement("p");
+currentVersion.style.position = "fixed";
+currentVersion.style.bottom = "20px";
+currentVersion.style.right = "20px";
+currentVersion.style.color = "white";
+currentVersion.innerHTML = "Version a1.0"
+audioPlayer.append(currentVersion);
+
 // Audio Player:
 const audioElement = document.createElement("audio");
 audioElement.classList.add("audioElement");
@@ -73,10 +83,10 @@ audioPlayer.appendChild(canvas);
 // Waveform Options:
 const colorOptions = document.createElement("select");
 const colorOptionsLabel = document.createElement("label");
-colorOptionsLabel.innerHTML = "Pick a Theme!"
+colorOptionsLabel.innerHTML = "Pick a Theme:"
 const waveformOptions = document.createElement("select");
 const waveformOptionsLabel = document.createElement("label");
-waveformOptionsLabel.innerHTML = "Pick a Waveform"
+waveformOptionsLabel.innerHTML = "Pick a Waveform:"
 loadWaveformColorOptions(colorOptions, waveformOptions);
 
 const options = document.createElement("section");
@@ -110,15 +120,18 @@ const createVisualiser = () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         switch(waveformConfig) {
-            case "Circular": 
+            case "Eclipse": 
                 drawCircularVisualiser();
                 break;
+            case "Dotted":
+                drawDefaultVisualiser(waveformConfig);
+                break;
             default:
-                drawDefaultVisualiser();
+                drawDefaultVisualiser(waveformConfig);
         }
     }
 
-    const drawDefaultVisualiser = () => {
+    const drawDefaultVisualiser = (waveformConfig) => {
         requestAnimationFrame(renderFrame);
         let bar = 0;
         analyser.getByteFrequencyData(dataArray);
@@ -126,9 +139,13 @@ const createVisualiser = () => {
         for (let i = 0; i < bufferLength; i++) {
             let barHeight = dataArray[i] * 2.5;
             const color = dataArray[i] + (25 * (i/bufferLength));
-
             ctx.fillStyle = checkColorConfig(color);
-            ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
+
+            if (waveformConfig === "Static") {
+                ctx.fillRect(bar, canvas.height - barHeight, barWidth, barWidth);
+            } else {
+                ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
+            }
             bar += barWidth;
         }
     }
