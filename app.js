@@ -1,14 +1,3 @@
-const musicObjArr = [
-    { url: "./assets/songs/back_n_forth.mp3", name: "Back 'n Forth"},
-    { url: "./assets/songs/hurricane.mp3", name: "Hurricane"},
-    { url: "./assets/songs/fake_pods.mp3", name: "Fake Pods"},
-    { url: "./assets/songs/crack_rock.mp3", name: "Crack Rock"},
-    { url: "./assets/songs/chapter_6.mp3", name: "Chapter Six"},
-    { url: "./assets/songs/my_only_one.flac", name: "My Only One"},
-    { url: "./assets/songs/blessings.mp3", name: "Blessings"},
-    { url: "./assets/songs/feel_the_love.flac", name: "Feel The Love"},
-    { url: "./assets/songs/she.mp3", name: "She"},
-];
 const optionsArr = [
     {type: "colorOption", name: "Northern Lights"},
     {type: "colorOption", name: "Violent Red"},
@@ -25,28 +14,23 @@ const optionsArr = [
     {type: "colorOption", name: "Rainbow"},
     {type: "waveformOption", name:"Spectrum"},
     {type: "waveformOption", name:"Static"},
-    {type: "waveformOption", name: "Eclipse"}
-    // DOTS/SINE WAVE
+    {type: "waveformOption", name: "Eclipse"},
+    {type: "sizeOption", name: "1024"},
+    {type: "sizeOption", name: "512"},
+    {type: "sizeOption", name: "256"},
+    {type: "sizeOption", name: "128"},
+    {type: "sizeOption", name: "64"},
+    {type: "sizeOption", name: "32"},
 ];
 
+let sizeConfig = 1024;
 let colorConfig = null;
 let waveformConfig = null;
 let audioContext = null;
 const audioPlayer = document.querySelector(".audioPlayer");
 
-// Loading in songs:
-const loadSongData = (element) => {
-    musicObjArr.forEach(musicObj => {
-        const songName = document.createElement("a");
-        songName.innerHTML = musicObj.name;
-        songName.href = musicObj.url;
-        songName.classList.add("songListItem");
-        element.appendChild(songName);
-    });
-}
-
 // Loading in options:
-const loadWaveformColorOptions = (element1, element2) => {
+const loadWaveformColorOptions = (element1, element2, element3) => {
     optionsArr.forEach(option => {
         const newOption = document.createElement("option");
         newOption.innerHTML = option.name;
@@ -55,6 +39,8 @@ const loadWaveformColorOptions = (element1, element2) => {
             element1.appendChild(newOption);
         } else if (option.type === "waveformOption") {
             element2.appendChild(newOption);
+        } else if (option.type === "sizeOption") {
+            element3.appendChild(newOption);
         }
     });
 }
@@ -72,9 +58,12 @@ audioPlayer.append(currentVersion);
 const audioElement = document.createElement("audio");
 audioElement.classList.add("audioElement");
 const player = document.createElement("section");
+const fileSelector = document.createElement("input");
+fileSelector.type = "file";
+player.append(fileSelector);
 audioPlayer.append(audioElement);
 audioPlayer.appendChild(player);
-loadSongData(player);
+
 
 // Canvas/Visualizer:
 const canvas = document.createElement("canvas");
@@ -84,16 +73,24 @@ audioPlayer.appendChild(canvas);
 const colorOptions = document.createElement("select");
 const colorOptionsLabel = document.createElement("label");
 colorOptionsLabel.innerHTML = "Pick a Theme:"
+
 const waveformOptions = document.createElement("select");
 const waveformOptionsLabel = document.createElement("label");
 waveformOptionsLabel.innerHTML = "Pick a Waveform:"
-loadWaveformColorOptions(colorOptions, waveformOptions);
+
+const sizeOptions = document.createElement("select");
+const sizeOptionsLabel = document.createElement("label");
+sizeOptionsLabel.innerHTML = "Pick the number of shown frequencies (refresh to change):"
+
+loadWaveformColorOptions(colorOptions, waveformOptions, sizeOptions);
 
 const options = document.createElement("section");
 options.append(colorOptionsLabel);
 options.append(colorOptions);
 options.append(waveformOptionsLabel);
 options.append(waveformOptions);
+options.append(sizeOptionsLabel);
+options.append(sizeOptions);
 audioPlayer.appendChild(options);
 
 // Visualizer:
@@ -106,9 +103,7 @@ const createVisualiser = () => {
     ctx.canvas.height = 675;
     src.connect(analyser);
     analyser.connect(audioContext.destination);
-
-    // 1024, 512, 256, 128, 64, 32? - make it a choice!
-    analyser.fftSize = 1024;
+    analyser.fftSize = sizeConfig;
 
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
@@ -153,6 +148,7 @@ const createVisualiser = () => {
         let radius = 150;
         // Draw circle
         ctx.beginPath();
+        ctx.lineWidth = 3;
         ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0 , 2 * Math.PI);
         ctx.stroke();
         analyser.getByteFrequencyData(dataArray);
@@ -167,7 +163,7 @@ const createVisualiser = () => {
             const y_end = canvas.height / 2 + Math.sin(radians * i) * (radius + bar_height);
             const color = (dataArray[i]) + (25 * i/bufferLength);
             ctx.strokeStyle = checkColorConfig(color);
-            ctx.lineWidth = 3;
+            ctx.lineWidth = (canvas.width / bufferLength)*2;
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(x_end, y_end);
@@ -178,17 +174,21 @@ const createVisualiser = () => {
     renderFrame();
 }
 
-// Playing/Pausing songs:
-const loadedSongList = document.querySelectorAll(".songListItem");
-loadedSongList.forEach(listItem => {
-    listItem.addEventListener("click", (e) => {
-        e.preventDefault();
+// Loading/Playing/Pausing songs:
+fileSelector.addEventListener("change", () => {
+    const song = document.createElement("a");
+    const url = window.URL.createObjectURL(fileSelector.files[0])
+    song.innerHTML = fileSelector.files[0].name;
+    song.href = url;
+    song.classList.add("songListItem");
+    player.append(song);
 
-        if (!audioContext) createVisualiser();
-        const isCurrentAudio = listItem.href == audioElement.src;
+    song.addEventListener("click", (e) => {
+        e.preventDefault();
+        const isCurrentAudio = song.href == audioElement.src;
 
         if (!isCurrentAudio) {
-            audioElement.src = listItem.href
+            audioElement.src = song.href;
             audioElement.play();
         } else if (isCurrentAudio && !audioElement.paused) {
             audioElement.pause();
@@ -196,14 +196,21 @@ loadedSongList.forEach(listItem => {
             audioElement.play();
         }
     });
+
+    if (!audioContext) createVisualiser();
+    audioElement.src = song.href;
+    audioElement.play();
 });
 
-// Changing colors/waveforms:
+// Changing options:
 colorOptions.addEventListener("change", (e) => {
     colorConfig = e.target.value;
 });
 waveformOptions.addEventListener("change", (e) => {
     waveformConfig = e.target.value;
+});
+sizeOptions.addEventListener("change", (e) => {
+    sizeConfig = e.target.value;
 });
 
 const checkColorConfig = (color) => {
