@@ -7,10 +7,10 @@ const musicObjArr = [
     { url: "./assets/songs/my_only_one.flac", name: "My Only One"},
     { url: "./assets/songs/blessings.mp3", name: "Blessings"},
     { url: "./assets/songs/feel_the_love.flac", name: "Feel The Love"},
-    { url: "./assets/songs/ziploc.mp3", name: "ZIPLOC"},
+    { url: "./assets/songs/she.mp3", name: "She"},
 ];
 const optionsArr = [
-    {type: "colorOption", name: "Default"},
+    {type: "colorOption", name: "Northern Lights"},
     {type: "colorOption", name: "Violent Red"},
     {type: "colorOption", name: "Jungle Green"},
     {type: "colorOption", name: "Ice Blue"},
@@ -92,8 +92,8 @@ const createVisualiser = () => {
     const src = audioContext.createMediaElementSource(audioElement);
     const analyser = audioContext.createAnalyser();
     const ctx = canvas.getContext("2d");
-    ctx.canvas.width  = 800;
-    ctx.canvas.height = 800;
+    ctx.canvas.width  = 675;
+    ctx.canvas.height = 675;
     src.connect(analyser);
     analyser.connect(audioContext.destination);
 
@@ -124,7 +124,7 @@ const createVisualiser = () => {
         analyser.getByteFrequencyData(dataArray);
         
         for (let i = 0; i < bufferLength; i++) {
-            let barHeight = dataArray[i] * 3;
+            let barHeight = dataArray[i] * 2.5;
             const color = dataArray[i] + (25 * (i/bufferLength));
 
             ctx.fillStyle = checkColorConfig(color);
@@ -133,7 +133,7 @@ const createVisualiser = () => {
         }
     }
     const drawCircularVisualiser = () => {
-        let radius = 200;
+        let radius = 150;
         // Draw circle
         ctx.beginPath();
         ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0 , 2 * Math.PI);
@@ -143,7 +143,6 @@ const createVisualiser = () => {
         for (var i = 0; i < bufferLength; i++) {
             const radians = (Math.PI * 2) / bufferLength;
             let bar_height = (dataArray[i] * 0.75);
-            if (bar_height < 0) bar_height = 0;
     
             const x = canvas.width / 2 + Math.cos(radians * i) * radius;
             const y = canvas.height / 2 + Math.sin(radians * i) * radius;
