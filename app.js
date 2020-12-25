@@ -51,7 +51,7 @@ currentVersion.style.position = "fixed";
 currentVersion.style.bottom = "20px";
 currentVersion.style.right = "20px";
 currentVersion.style.color = "white";
-currentVersion.innerHTML = "Version a1.0"
+currentVersion.innerHTML = "Version a1.1"
 audioPlayer.append(currentVersion);
 
 // Audio Player:
