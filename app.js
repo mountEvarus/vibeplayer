@@ -51,7 +51,7 @@ currentVersion.style.position = "fixed";
 currentVersion.style.bottom = "20px";
 currentVersion.style.right = "20px";
 currentVersion.style.color = "white";
-currentVersion.innerHTML = "Version a1.1"
+currentVersion.innerHTML = "Version 0.8.1"
 audioPlayer.append(currentVersion);
 
 // Audio Player:
@@ -110,7 +110,6 @@ const createVisualiser = () => {
     const barWidth = (canvas.width / bufferLength);
     
     const renderFrame = () => {
-
         ctx.fillStyle= "#000";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -125,7 +124,6 @@ const createVisualiser = () => {
                 drawDefaultVisualiser(waveformConfig);
         }
     }
-
     const drawDefaultVisualiser = (waveformConfig) => {
         requestAnimationFrame(renderFrame);
         let bar = 0;
@@ -178,7 +176,8 @@ const createVisualiser = () => {
 fileSelector.addEventListener("change", () => {
     const song = document.createElement("a");
     const url = window.URL.createObjectURL(fileSelector.files[0])
-    song.innerHTML = fileSelector.files[0].name;
+    const songExtensionDot = fileSelector.files[0].name.lastIndexOf(".");
+    song.innerHTML = fileSelector.files[0].name.slice(0, songExtensionDot);;
     song.href = url;
     song.classList.add("songListItem");
     player.append(song);
@@ -196,7 +195,6 @@ fileSelector.addEventListener("change", () => {
             audioElement.play();
         }
     });
-
     if (!audioContext) createVisualiser();
     audioElement.src = song.href;
     audioElement.play();
