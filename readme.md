@@ -1,12 +1,13 @@
 ### JS Roadmap:
-# Pause/play button
-# General styling
-# Hidden menus for left and right navs (burger menu/arrow style hidden until hover/click)
-# Figure out how to load all music in a folder!
-# Final styling
-# Clean up code (seperation of concerns!)
+# 0.8.5 -> Pause/play button
+# 0.8.5.5 -> General styling
+# 0.8.6 -> Hidden menus for left and right navs (burger menu/arrow style hidden until hover/click)
+# 0.8.7 -> Figure out how to load all music in a folder!
+# 0.8.8 -> Final styling
+# 0.8.9 -> Media Queries
+# 0.8.9.5 -> Clean up code (seperation of concerns!)
 
-### JS PROTOTYPE FINISHED
+### 0.9 -> JS PROTOTYPE FINISHED
 
 ### C Roadmap:
 # Implement music sorting and grouping
