@@ -33,6 +33,10 @@ body {
   margin: 15px;
   width: 50%;
 }
+.audioPlayer section img {
+  width: 250px;
+  height: 250px;
+}
 .audioPlayer canvas {
   flex: 2;
 }

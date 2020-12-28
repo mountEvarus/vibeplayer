@@ -1,32 +1,10 @@
-const optionsArr = [
-    {type: "colorOption", name: "Northern Lights"},
-    {type: "colorOption", name: "Violent Red"},
-    {type: "colorOption", name: "Jungle Green"},
-    {type: "colorOption", name: "Ice Blue"},
-    {type: "colorOption", name: "Red Fade"},
-    {type: "colorOption", name: "Green Fade"},
-    {type: "colorOption", name: "Blue Fade"},
-    {type: "colorOption", name: "Solid White"},
-    {type: "colorOption", name: "Monochrome"},
-    {type: "colorOption", name: "Autumn"},
-    {type: "colorOption", name: "Lilac"},
-    {type: "colorOption", name: "Rose Gold"},
-    {type: "colorOption", name: "Rainbow"},
-    {type: "waveformOption", name:"Spectrum"},
-    {type: "waveformOption", name:"Static"},
-    {type: "waveformOption", name: "Eclipse"},
-    {type: "sizeOption", name: "1024"},
-    {type: "sizeOption", name: "512"},
-    {type: "sizeOption", name: "256"},
-    {type: "sizeOption", name: "128"},
-    {type: "sizeOption", name: "64"},
-    {type: "sizeOption", name: "32"},
-];
+import optionsArr from "./config.js";
 
 let sizeConfig = 1024;
 let colorConfig = null;
 let waveformConfig = null;
 let audioContext = null;
+const jsmediatags = window.jsmediatags;
 const audioPlayer = document.querySelector(".audioPlayer");
 
 // Loading in options:
@@ -45,13 +23,13 @@ const loadWaveformColorOptions = (element1, element2, element3) => {
     });
 }
 
-// CURRENT VERSION NOTE:
+// Current Version Note:
 const currentVersion = document.createElement("p");
 currentVersion.style.position = "fixed";
 currentVersion.style.bottom = "20px";
 currentVersion.style.right = "20px";
 currentVersion.style.color = "white";
-currentVersion.innerHTML = "Version 0.8.1"
+currentVersion.innerHTML = "Version 0.8.4"
 audioPlayer.append(currentVersion);
 
 // Audio Player:
@@ -92,6 +70,10 @@ options.append(waveformOptions);
 options.append(sizeOptionsLabel);
 options.append(sizeOptions);
 audioPlayer.appendChild(options);
+
+// Cover art:
+const art = document.createElement("img");
+options.append(art);
 
 // Visualizer:
 const createVisualiser = () => {
@@ -153,7 +135,7 @@ const createVisualiser = () => {
         
         for (var i = 0; i < bufferLength; i++) {
             const radians = (Math.PI * 2) / bufferLength;
-            let bar_height = (dataArray[i] * 0.75);
+            let bar_height = (dataArray[i] * 0.7);
     
             const x = canvas.width / 2 + Math.cos(radians * i) * radius;
             const y = canvas.height / 2 + Math.sin(radians * i) * radius;
@@ -175,12 +157,32 @@ const createVisualiser = () => {
 // Loading/Playing/Pausing songs:
 fileSelector.addEventListener("change", () => {
     const song = document.createElement("a");
-    const url = window.URL.createObjectURL(fileSelector.files[0])
-    const songExtensionDot = fileSelector.files[0].name.lastIndexOf(".");
-    song.innerHTML = fileSelector.files[0].name.slice(0, songExtensionDot);;
+    const url = window.URL.createObjectURL(fileSelector.files[0]);
+    let base64 = null;
+
     song.href = url;
     song.classList.add("songListItem");
     player.append(song);
+
+    // Clean this up!!!
+    jsmediatags.read(fileSelector.files[0], {
+        onSuccess: (songInfo) => {
+
+            song.innerHTML = `${songInfo.tags.title}, by ${songInfo.tags.artist}`;
+            const image = songInfo.tags.picture;
+
+            if (image) {
+                var base64String = "";
+                for (let i = 0; i < image.data.length; i++) {
+                    base64String += String.fromCharCode(image.data[i]);
+                }
+                base64 = "data:" + image.format + ";base64," + window.btoa(base64String);
+                art.setAttribute('src',base64);
+            } else art.src = "./assets/no-artwork.png";
+        }
+    });
+
+    if (song.innerHTML.length === 0) song.innerHTML = fileSelector.files[0].name;
 
     song.addEventListener("click", (e) => {
         e.preventDefault();
@@ -193,6 +195,10 @@ fileSelector.addEventListener("change", () => {
             audioElement.pause();
         } else if (isCurrentAudio && audioElement.paused) {
             audioElement.play();
+        }
+
+        if (art.src !== base64) {
+            art.src = base64;
         }
     });
     if (!audioContext) createVisualiser();

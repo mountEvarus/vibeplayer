@@ -1,0 +1,26 @@
+const optionsArr = [
+    {type: "colorOption", name: "Northern Lights"},
+    {type: "colorOption", name: "Violent Red"},
+    {type: "colorOption", name: "Jungle Green"},
+    {type: "colorOption", name: "Ice Blue"},
+    {type: "colorOption", name: "Red Fade"},
+    {type: "colorOption", name: "Green Fade"},
+    {type: "colorOption", name: "Blue Fade"},
+    {type: "colorOption", name: "Solid White"},
+    {type: "colorOption", name: "Monochrome"},
+    {type: "colorOption", name: "Autumn"},
+    {type: "colorOption", name: "Lilac"},
+    {type: "colorOption", name: "Rose Gold"},
+    {type: "colorOption", name: "Rainbow"},
+    {type: "waveformOption", name:"Spectrum"},
+    {type: "waveformOption", name:"Static"},
+    {type: "waveformOption", name: "Eclipse"},
+    {type: "sizeOption", name: "1024"},
+    {type: "sizeOption", name: "512"},
+    {type: "sizeOption", name: "256"},
+    {type: "sizeOption", name: "128"},
+    {type: "sizeOption", name: "64"},
+    {type: "sizeOption", name: "32"},
+];
+
+export default optionsArr;

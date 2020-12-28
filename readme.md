@@ -5,8 +5,6 @@
 # Figure out how to load all music in a folder!
 # Final styling
 # Clean up code (seperation of concerns!)
-# Move config to other file.
-# id3 tag info and cover art
 
 ### JS PROTOTYPE FINISHED
 
