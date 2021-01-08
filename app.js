@@ -11,15 +11,13 @@ const audioPlayer = document.querySelector(".audioPlayer");
 const loadWaveformColorOptions = (element1, element2, element3) => {
     optionsArr.forEach(option => {
         const newOption = document.createElement("option");
+        newOption.style.background = "black";
+        newOption.style.fontSize = "20px";
         newOption.innerHTML = option.name;
 
-        if (option.type === "colorOption") {
-            element1.appendChild(newOption);
-        } else if (option.type === "waveformOption") {
-            element2.appendChild(newOption);
-        } else if (option.type === "sizeOption") {
-            element3.appendChild(newOption);
-        }
+        if (option.type === "colorOption") element1.appendChild(newOption);
+        else if (option.type === "waveformOption") element2.appendChild(newOption);
+        else if (option.type === "sizeOption") element3.appendChild(newOption);
     });
 }
 
@@ -29,7 +27,7 @@ currentVersion.style.position = "fixed";
 currentVersion.style.bottom = "20px";
 currentVersion.style.right = "20px";
 currentVersion.style.color = "white";
-currentVersion.innerHTML = "Version 0.8.4"
+currentVersion.innerHTML = "Version 0.8.4.1"
 audioPlayer.append(currentVersion);
 
 // Audio Player:
@@ -38,10 +36,20 @@ audioElement.classList.add("audioElement");
 const player = document.createElement("section");
 const fileSelector = document.createElement("input");
 fileSelector.type = "file";
+fileSelector.className = "fileSelector";
+fileSelector.id = "file-selector";
+const fileSelectorLabel = document.createElement("label");
+fileSelectorLabel.htmlFor = "file-selector";
+fileSelectorLabel.innerHTML = "<i class='fas fa-upload'></i> Select Music";
+fileSelectorLabel.className = "fileSelectorLabel";
+const musicList = document.createElement("article");
+musicList.className = "songSelector";
+
+player.append(fileSelectorLabel);
 player.append(fileSelector);
+player.append(musicList);
 audioPlayer.append(audioElement);
 audioPlayer.appendChild(player);
-
 
 // Canvas/Visualizer:
 const canvas = document.createElement("canvas");
@@ -49,16 +57,19 @@ audioPlayer.appendChild(canvas);
 
 // Waveform Options:
 const colorOptions = document.createElement("select");
+colorOptions.className = "dropdownOptions";
 const colorOptionsLabel = document.createElement("label");
-colorOptionsLabel.innerHTML = "Pick a Theme:"
+colorOptionsLabel.innerHTML = "Select a Theme:"
 
 const waveformOptions = document.createElement("select");
+waveformOptions.className = "dropdownOptions";
 const waveformOptionsLabel = document.createElement("label");
-waveformOptionsLabel.innerHTML = "Pick a Waveform:"
+waveformOptionsLabel.innerHTML = "Select a Waveform:"
 
 const sizeOptions = document.createElement("select");
+sizeOptions.className = "dropdownOptions";
 const sizeOptionsLabel = document.createElement("label");
-sizeOptionsLabel.innerHTML = "Pick the number of shown frequencies (refresh to change):"
+sizeOptionsLabel.innerHTML = "Select a datapoint count:"
 
 loadWaveformColorOptions(colorOptions, waveformOptions, sizeOptions);
 
@@ -73,6 +84,7 @@ audioPlayer.appendChild(options);
 
 // Cover art:
 const art = document.createElement("img");
+art.src = "./assets/no-artwork.png";
 options.append(art);
 
 // Visualizer:
@@ -81,8 +93,8 @@ const createVisualiser = () => {
     const src = audioContext.createMediaElementSource(audioElement);
     const analyser = audioContext.createAnalyser();
     const ctx = canvas.getContext("2d");
-    ctx.canvas.width  = 675;
-    ctx.canvas.height = 675;
+    ctx.canvas.width  = window.innerHeight - 10;
+    ctx.canvas.height = window.innerHeight - 10;
     src.connect(analyser);
     analyser.connect(audioContext.destination);
     analyser.fftSize = sizeConfig;
@@ -116,32 +128,29 @@ const createVisualiser = () => {
             const color = dataArray[i] + (25 * (i/bufferLength));
             ctx.fillStyle = checkColorConfig(color);
 
-            if (waveformConfig === "Static") {
-                ctx.fillRect(bar, canvas.height - barHeight, barWidth, barWidth);
-            } else {
-                ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
-            }
+            if (waveformConfig === "Static") ctx.fillRect(bar, canvas.height - barHeight, barWidth, barWidth); 
+            else ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight);
             bar += barWidth;
         }
     }
     const drawCircularVisualiser = () => {
+        requestAnimationFrame(renderFrame);
         let radius = 150;
-        // Draw circle
         ctx.beginPath();
         ctx.lineWidth = 3;
         ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0 , 2 * Math.PI);
         ctx.stroke();
         analyser.getByteFrequencyData(dataArray);
         
-        for (var i = 0; i < bufferLength; i++) {
+        for (let i = 0; i < bufferLength; i++) {
             const radians = (Math.PI * 2) / bufferLength;
-            let bar_height = (dataArray[i] * 0.7);
-    
+            const bar_height = (dataArray[i] * 0.75);
             const x = canvas.width / 2 + Math.cos(radians * i) * radius;
             const y = canvas.height / 2 + Math.sin(radians * i) * radius;
             const x_end = canvas.width / 2 + Math.cos(radians * i) * (radius + bar_height);
             const y_end = canvas.height / 2 + Math.sin(radians * i) * (radius + bar_height);
             const color = (dataArray[i]) + (25 * i/bufferLength);
+
             ctx.strokeStyle = checkColorConfig(color);
             ctx.lineWidth = (canvas.width / bufferLength)*2;
             ctx.beginPath();
@@ -149,7 +158,6 @@ const createVisualiser = () => {
             ctx.lineTo(x_end, y_end);
             ctx.stroke();
         }
-        requestAnimationFrame(renderFrame);
     }
     renderFrame();
 }
@@ -159,20 +167,23 @@ fileSelector.addEventListener("change", () => {
     const song = document.createElement("a");
     const url = window.URL.createObjectURL(fileSelector.files[0]);
     let base64 = null;
-
     song.href = url;
     song.classList.add("songListItem");
-    player.append(song);
+    musicList.append(song);
+
+
+
+
+
 
     // Clean this up!!!
     jsmediatags.read(fileSelector.files[0], {
         onSuccess: (songInfo) => {
-
             song.innerHTML = `${songInfo.tags.title}, by ${songInfo.tags.artist}`;
             const image = songInfo.tags.picture;
 
             if (image) {
-                var base64String = "";
+                let base64String = "";
                 for (let i = 0; i < image.data.length; i++) {
                     base64String += String.fromCharCode(image.data[i]);
                 }
@@ -181,6 +192,10 @@ fileSelector.addEventListener("change", () => {
             } else art.src = "./assets/no-artwork.png";
         }
     });
+
+
+
+
 
     if (song.innerHTML.length === 0) song.innerHTML = fileSelector.files[0].name;
 
@@ -197,9 +212,7 @@ fileSelector.addEventListener("change", () => {
             audioElement.play();
         }
 
-        if (art.src !== base64) {
-            art.src = base64;
-        }
+        if (art.src !== base64) art.src = base64;
     });
     if (!audioContext) createVisualiser();
     audioElement.src = song.href;
@@ -207,15 +220,9 @@ fileSelector.addEventListener("change", () => {
 });
 
 // Changing options:
-colorOptions.addEventListener("change", (e) => {
-    colorConfig = e.target.value;
-});
-waveformOptions.addEventListener("change", (e) => {
-    waveformConfig = e.target.value;
-});
-sizeOptions.addEventListener("change", (e) => {
-    sizeConfig = e.target.value;
-});
+colorOptions.addEventListener("change", (e) => colorConfig = e.target.value);
+waveformOptions.addEventListener("change", (e) => waveformConfig = e.target.value);
+sizeOptions.addEventListener("change", (e) => sizeConfig = e.target.value);
 
 const checkColorConfig = (color) => {
     switch(colorConfig) {

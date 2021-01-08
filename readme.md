@@ -6,10 +6,10 @@
 # 0.8.8 -> Final styling
 # 0.8.9 -> Media Queries
 # 0.8.9.5 -> Clean up code (seperation of concerns!)
+# 0.9 -> JS PROTOTYPE FINISHED
 
-### 0.9 -> JS PROTOTYPE FINISHED
-
-### C Roadmap:
+### C# Roadmap:
+# Move the current project over to C#
 # Implement music sorting and grouping
    # By normal id3 tags (Artist,song name, etc)
    # Grouping (Like in musicBee)
@@ -17,11 +17,9 @@
 # Move to a fully-fledged app
 # Add caching of songs and config choices
 # Stretch - Custom RBG theming
-
-### C#/C++ Version finished
+# C# Version finished
 
 ### MM Roadmap:
 # Move application to MM using the SDK
 # Add to MM Pi
-
-### Final Prototype
+# Final Prototype
