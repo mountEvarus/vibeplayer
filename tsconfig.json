@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./",
+      "downlevelIteration": true,
+      "esModuleInterop": true,
+      "jsx": "react",
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "strict": true,
+      "target": "esnext",
+      "paths": {
+        "@src*": ["src*"]
+      }
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
