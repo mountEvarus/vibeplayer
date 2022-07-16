@@ -6,15 +6,15 @@ export function renderFrame (analyser, canvas) {
   ctx.fillStyle= "#000"
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // TODO static & default waveforms
-  circularWaveform(analyser, canvas)
+  // TODO - dynamic FFT
+  analyser.fftSize = 1024
+
+  staticWaveform(analyser, canvas)
 }
 
 
 function circularWaveform(analyser, canvas) {
   const ctx = canvas.getContext("2d")
-  // TODO - dynamic FFT
-  analyser.fftSize = 1024
   const bufferLength = analyser.frequencyBinCount
   const dataArray = new Uint8Array(bufferLength)
 
@@ -43,5 +43,50 @@ function circularWaveform(analyser, canvas) {
     ctx.moveTo(x, y)
     ctx.lineTo(x_end, y_end)
     ctx.stroke()
+  }
+}
+
+
+function defaultWaveform(analyser, canvas) {
+  const ctx = canvas.getContext("2d")
+  const bufferLength = analyser.frequencyBinCount
+  const dataArray = new Uint8Array(bufferLength)
+  const barWidth = (canvas.width / bufferLength)
+
+  requestAnimationFrame(() => renderFrame(analyser, canvas))
+  let bar = 0
+  analyser.getByteFrequencyData(dataArray)
+  
+  for (let i = 0; i < bufferLength; i++) {
+    // TODO - variable / more accurate?
+    let barHeight = dataArray[i] * 2.5
+    const color = dataArray[i] + (25 * (i/bufferLength))
+    // TODO - dynamic color
+    ctx.fillStyle = `rgb(50, ${color+50}, 200)`
+
+    ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight)
+    bar += barWidth
+  }
+}
+
+function staticWaveform(analyser, canvas) {
+  const ctx = canvas.getContext("2d")
+  const bufferLength = analyser.frequencyBinCount
+  const dataArray = new Uint8Array(bufferLength)
+  const barWidth = (canvas.width / bufferLength)
+
+  requestAnimationFrame(() => renderFrame(analyser, canvas))
+  let bar = 0
+  analyser.getByteFrequencyData(dataArray)
+  
+  for (let i = 0; i < bufferLength; i++) {
+    // TODO - variable / more accurate?
+    let barHeight = dataArray[i] * 2.5
+    const color = dataArray[i] + (25 * (i/bufferLength))
+    // TODO - dynamic color
+    ctx.fillStyle = `rgb(50, ${color+50}, 200)`
+
+    ctx.fillRect(bar, canvas.height - barHeight, barWidth, barWidth) 
+    bar += barWidth
   }
 }
