@@ -1,7 +1,6 @@
 import { updateMediaData } from "./media-tags.js"
 import { initialiseVisualiser } from "./visualiser.js"
 
-const { read } = window.jsmediatags
 let audioContext = null
 
 function init() {
@@ -10,10 +9,10 @@ function init() {
 }
 
 function handleUpload() {
-  const input = document.querySelector("input")
-  const fileSrc = window.URL.createObjectURL(input.files[0])
+  const file = document.querySelector("input").files[0]
+  const fileSrc = window.URL.createObjectURL(file)
 
-  updateMediaData(input.files[0])
+  updateMediaData(file)
   updateSourceAndPlay(fileSrc)
 }
 
