@@ -1,7 +1,8 @@
 import { updateMediaData } from "./media-tags.js"
 import { initialiseVisualiser } from "./visualiser.js"
 
-let audioContext = null
+window.vibe = {}
+window.vibe.audioContext = null
 
 function init() {
   const input = document.querySelector("input")
@@ -17,15 +18,23 @@ function handleUpload() {
 }
 
 function updateSourceAndPlay(src) {
+  const audioContext = window.vibe.audioContext
   const audio = document.querySelector(".audioElement")
   audio.src = src
 
   if(!audioContext) {
-    initialiseVisualiser(audio, audioContext)
+    initialiseVisualiser(audio)
+  }
+
+  if (!audio.paused) {
+    audio.pause()
   }
 
   audio.play().catch((e) => {
-    console.log(`Failed to play audiofile becasue ${e.message}`)
+    const message = `Failed to play audiofile becasue: ${e.message}`
+    // eslint-disable-next-line no-console
+    console.error(message)
+    alert(message)
   })
 }
 

@@ -1,19 +1,28 @@
 import { renderFrame } from "./waveform.js"
 
-export function initialiseVisualiser(audio, audioContext) {
-  const { analyser, canvas } = setupWiring(audio, audioContext)
+let analyser = null
+
+export function initialiseVisualiser(audio) {
+  setupWiring(audio)
   
+  const canvas = document.querySelector(".visualiser")
   renderFrame(analyser, canvas)
 }
 
-function setupWiring(audio, audioContext) {
-  audioContext = new AudioContext()
-  const source = audioContext.createMediaElementSource(audio)
-  const analyser = audioContext.createAnalyser()
-  const canvas = document.querySelector(".visualiser")
+function setupWiring(audio) {
 
-  source.connect(analyser)
-  analyser.connect(audioContext.destination)
+  try {
+    window.vibe.audioContext = new AudioContext()
+    const audioContext = window.vibe.audioContext
+    const source = audioContext.createMediaElementSource(audio)
+    analyser = audioContext.createAnalyser()
 
-  return { analyser, canvas }
+    source.connect(analyser)
+    analyser.connect(audioContext.destination)
+  } catch(e) {
+    const message = `Failed to initialise audio context becasue: ${e.message}`
+    // eslint-disable-next-line no-console
+    console.error(message)
+    alert(message)
+  }
 }

@@ -1,13 +1,18 @@
 const { read } = window.jsmediatags
 
 export function updateMediaData(src) {
-  const details = document.querySelector(".details")
+  const nowPlaying = document.querySelector(".nowPlaying")
   const cover = document.querySelector(".cover")
 
   read(src, {
     onSuccess: (data) => {
-      details.innerHTML = `<b>${data.tags.title ?? "Unknown"}</b> by <b>${data.tags.artist ?? "unkown"}</b>`
+
+      nowPlaying.innerHTML = `<b>${data.tags.title ?? "Unknown"}</b> by <b>${data.tags.artist ?? "unkown"}</b>`
       cover.src = getImage(data.tags.picture)
+    },
+    onError: (error) => {
+      // eslint-disable-next-line no-console
+      console.error(error)
     },
   })
 }
