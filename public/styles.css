@@ -1,0 +1,51 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+  height: 100vh;
+}
+
+nav {
+  background-color: rgb(72,11,23);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  overflow: hidden;
+  padding: 0 24px;
+}
+
+nav > .upload input {
+  height: 0;
+  width: 0;
+}
+
+nav > .upload label {
+  cursor: pointer;
+  font-size: 32px;
+}
+
+nav > .details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+main {
+  height: 100%;
+  overflow: hidden;
+}
+
+canvas {
+  background-color: black;
+  height: 100%;
+  width: 100vw;
+}

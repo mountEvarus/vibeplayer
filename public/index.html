@@ -7,18 +7,41 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Potta+One&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2a4ef2c7ad.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.3/jsmediatags.min.js" integrity="sha512-gQ6HBTG0fuB5lRb4v9YJtFPyKUBGlaK1o6cmzqt6umBCyi4S1XdCg/hVptb1XLs1MTkUtCH6rZSI0a+eJJLkXQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.3/jsmediatags.js" integrity="sha512-eslnEAgh827ohn81V6niqerqxZE5ngmrkFCwKw5fFr0521Zkpbn0uIzPaovh5UDWkws2UAU4yhqD9BJsP3iimg==" crossorigin="anonymous"></script>
   </head>
   <body>
     <noscript> You need to enable JavaScript to run this app.</noscript>
-    <div id="root">
+    <nav>
+      <section class="upload">
+        <label for="file-upload"><i class="fas fa-upload"></i></label>
+        <input id="file-upload" type="file"/>
+      </section>
+      <section class="options">
+        <label for="fft-size">Bar Count</label>
+        <select class="fftSize" id="fft-size">
+          <option default value="1024">512</option>
+          <option value="512">256</option>
+          <option value="256">128</option>
+          <option value="128">64</option>
+          <option value="64">32</option>
+          <option value="32">16</option>
+        </select>
+      </section>
+      <section class="details">
+        <p class="details">No song currently playing</p>
+        <img class="cover" height="50px" src="./assets/no-artwork.png" width="50px" />
+      </section>
+    </nav>
+    <main>
       <audio class="audioElement"></audio>
-      <input type="file"/>
-      <p class="details">No song currently playing</p>
-      <img class="cover" height="100px" width="100px" />
       <canvas class="visualiser" />
-    </div>
+    </main>
     <script src="../src/index.js" type="module"></script>
   </body>
 </html>

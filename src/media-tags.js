@@ -6,7 +6,7 @@ export function updateMediaData(src) {
 
   read(src, {
     onSuccess: (data) => {
-      details.innerText = `${data.tags.title ?? "Unknown"} by ${data.tags.artist ?? "unkown"}`
+      details.innerHTML = `<b>${data.tags.title ?? "Unknown"}</b> by <b>${data.tags.artist ?? "unkown"}</b>`
       cover.src = getImage(data.tags.picture)
     },
   })
