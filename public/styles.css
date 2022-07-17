@@ -8,7 +8,7 @@
 body {
   display: flex;
   flex-direction: column;
-  background-color: red;
+  background-color: black;
   height: 100vh;
 }
 
@@ -54,4 +54,38 @@ canvas {
   background-color: black;
   height: 100%;
   width: 100vw;
+}
+
+@media only screen and (max-width: 1200px) {
+  nav {
+    height: 88px;
+  }
+
+  nav > .options {
+    gap: 24px;
+  }
+
+  nav .optionBox {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  nav > .details {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  nav {
+    height: 300px;
+  }
+
+  nav > .options {
+    flex-direction: column;
+  }
 }
