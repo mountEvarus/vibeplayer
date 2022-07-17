@@ -1,3 +1,5 @@
+import { getPaletteColor } from "./color.js"
+
 export function renderFrame (analyser, canvas) {
   const ctx = canvas.getContext("2d")
   ctx.canvas.width = window.innerWidth - 10
@@ -8,7 +10,17 @@ export function renderFrame (analyser, canvas) {
   const setFftSize = document.querySelector(".fftSize").value
   analyser.fftSize = setFftSize
 
-  staticWaveform(analyser, canvas)
+  const waveformShape = document.querySelector(".waveform").value
+  switch(waveformShape) {
+    case "bar":
+      defaultWaveform(analyser, canvas)
+      break
+    case "static":
+      staticWaveform(analyser, canvas)
+      break
+    default:
+      circularWaveform(analyser, canvas)
+  }
 }
 
 
@@ -35,8 +47,7 @@ function circularWaveform(analyser, canvas) {
     const y_end = canvas.height / 2 + Math.sin(radians * i) * (radius + bar_height)
     const color = (dataArray[i]) + (25 * i/bufferLength)
 
-    // TODO - dynamic color
-    ctx.strokeStyle = `rgb(50, ${color+50}, 200)`
+    ctx.strokeStyle = getPaletteColor(color)
     ctx.lineWidth = (canvas.width / bufferLength)*2
     ctx.beginPath()
     ctx.moveTo(x, y)
@@ -60,8 +71,7 @@ function defaultWaveform(analyser, canvas) {
     // TODO - variable / more accurate?
     let barHeight = dataArray[i] * 2.5
     const color = dataArray[i] + (25 * (i/bufferLength))
-    // TODO - dynamic color
-    ctx.fillStyle = `rgb(50, ${color+50}, 200)`
+    ctx.fillStyle = getPaletteColor(color)
 
     ctx.fillRect(bar, canvas.height - barHeight, barWidth, barHeight)
     bar += barWidth
@@ -82,8 +92,7 @@ function staticWaveform(analyser, canvas) {
     // TODO - variable / more accurate?
     let barHeight = dataArray[i] * 2.5
     const color = dataArray[i] + (25 * (i/bufferLength))
-    // TODO - dynamic color
-    ctx.fillStyle = `rgb(50, ${color+50}, 200)`
+    ctx.fillStyle = getPaletteColor(color)
 
     ctx.fillRect(bar, canvas.height - barHeight, barWidth, barWidth) 
     bar += barWidth

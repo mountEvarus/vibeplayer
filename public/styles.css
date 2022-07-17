@@ -33,6 +33,12 @@ nav > .upload label {
   font-size: 32px;
 }
 
+nav > .options {
+  display: flex;
+  align-items: center;
+  gap: 40px
+}
+
 nav > .details {
   display: flex;
   align-items: center;

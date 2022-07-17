@@ -23,15 +23,43 @@
         <input id="file-upload" type="file"/>
       </section>
       <section class="options">
-        <label for="fft-size">Bar Count</label>
-        <select class="fftSize" id="fft-size">
-          <option default value="1024">512</option>
-          <option value="512">256</option>
-          <option value="256">128</option>
-          <option value="128">64</option>
-          <option value="64">32</option>
-          <option value="32">16</option>
-        </select>
+        <div>
+          <label for="fft-size">Bar Count</label>
+          <select class="fftSize" id="fft-size">
+            <option default value="1024">512</option>
+            <option value="512">256</option>
+            <option value="256">128</option>
+            <option value="128">64</option>
+            <option value="64">32</option>
+            <option value="32">16</option>
+          </select>
+        </div>
+        <div>
+          <label for="waveform">Waveform shape</label>
+          <select class="waveform" id="waveform">
+            <option default value="circular">Circular</option>
+            <option value="bar">Bar</option>
+            <option value="static">Static</option>
+          </select>
+        </div>
+        <div>
+          <label for="palette">Color Palette</label>
+          <select class="palette" id="palette">
+            <option default value="northenLights">Northern Lights</option>
+            <option value="violentRed">Violent Red</option>
+            <option value="jungleGreen">Jungle Green</option>
+            <option value="iceBlue">Ice Blue</option>
+            <option value="redFade">Red Fade</option>
+            <option value="blueFade">Blue Fade</option>
+            <option value="greenFade">Green Fade</option>
+            <option value="solidWhite">Solid White</option>
+            <option value="monochrome">Monochrome</option>
+            <option value="autumn">Autumn</option>
+            <option value="lilac">Lilac</option>
+            <option value="roseGold">Rose Gold</option>
+            <option value="rainbow">Rainbow</option>
+          </select>
+        </div>
       </section>
       <section class="details">
         <p class="details">No song currently playing</p>
