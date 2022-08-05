@@ -1,4 +1,4 @@
-# Vibeplayer v0.5.4
+# Vibeplayer v1.0.2
 
 ## Description
 
