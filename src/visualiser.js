@@ -6,6 +6,7 @@ export function initialiseVisualiser(audio) {
   setupWiring(audio)
   
   const canvas = document.querySelector(".visualiser")
+  canvas.style.display = "block"
   renderFrame(analyser, canvas)
 }
 

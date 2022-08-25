@@ -10,6 +10,9 @@ function init() {
 }
 
 function handleUpload() {
+  const landingInfo = document.getElementById("landing-info")
+  landingInfo.style.display = "none"
+
   const file = document.querySelector("input").files[0]
   const fileSrc = window.URL.createObjectURL(file)
 
