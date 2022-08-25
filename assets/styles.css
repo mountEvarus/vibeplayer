@@ -60,7 +60,6 @@ main {
   justify-content: center;
   margin: 0 24px 0 24px;
   padding: auto;
-  /* TODO - media queries for margin */
 }
 
 .landingInfo p {
@@ -91,6 +90,10 @@ canvas {
 }
 
 @media only screen and (max-width: 900px) {
+  nav {
+    max-height: 88px;
+  }
+
   nav > .details {
     height: 0;
     overflow: hidden;
@@ -99,11 +102,17 @@ canvas {
 }
 
 @media only screen and (max-width: 600px) {
-  nav {
-    height: 300px;
+  @media only screen and (max-width: 900px) {
+    nav {
+      max-height: 88px;
+    }
+  
+    nav > .options {
+      flex-direction: column;
+      max-height: 80px;
+      overflow-y: scroll;
+      padding: 16px 0 16px 0;
+    }
   }
-
-  nav > .options {
-    flex-direction: column;
-  }
+  
 }
